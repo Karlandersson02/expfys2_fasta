@@ -74,21 +74,26 @@ def combined(Meas1: MEASUREMENT, Meas2: MEASUREMENT, contact: float=3000e-9) -> 
     Meas2_indices = Meas2.closest_index((contact, 'inf'))
     Meas1_slice = slice(*Meas1_indices)
     Meas2_slice = slice(*Meas2_indices)
-    print(Meas1_indices, Meas2_indices)
+    # print(Meas1_indices, Meas2_indices)
     return {
         'x': np.concatenate((Meas1.data['x'][Meas1_slice], Meas2.data['x'][Meas2_slice])),
         'y': np.concatenate((Meas1.data['y'][Meas1_slice], Meas2.data['y'][Meas2_slice]))
         }
 
-def plot_combined(Meas1: MEASUREMENT, Meas2: MEASUREMENT, contact: float=3000e-9) -> None:
+def plot_combined(Meas1: MEASUREMENT, Meas2: MEASUREMENT, contact: float=3000e-9, show=True) -> None:
     data = combined(Meas1, Meas2, contact=contact)
     plt.plot(data['x']*1e9, data['y'], color='black')
     plt.xlabel(r'Våglängd $\lambda$ [nm]')
     plt.ylabel(r'Transmission $T$ [%]')
     plt.grid()
-    plt.show()
+    if show:
+        plt.show()
 
 Cary = CARY(PATH_Cary)
 Perkin = PERKIN(PATH_perkin)
 
-plot_combined(Cary, Perkin)
+plot_combined(Cary, Perkin, show=False)
+# plt.xscale('log')
+
+plt.axvline(3000, color='red', linestyle='--')
+plt.show()
